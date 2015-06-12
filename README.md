@@ -7,8 +7,10 @@ Use this script to inject charts to your html on server side.
 
 You could also use it on the desktop using local browser without the need for a webserver to run.
 
-checkout bar-chart-how-to.fsx for guidance
+checkout ```bar-chart-how-to.fsx``` for guidance
 
 Here's a screenshot
-![screenshot](https://github.com/Indy9000/google-charts/blob/master/screenshot.png)
+
+<img src="https://github.com/Indy9000/google-charts/blob/master/screenshot.png" alt="screenshot" style="width: 75px;"/>
+
 
