@@ -1,24 +1,33 @@
-﻿
+﻿(**
+This script shows how to insert a Google bar chart to an html page.
+*)
+
 #load "google-bar-chart.fsx" 
 open System
 open System.IO
 open GoogleCharts
 
+Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+
 let your_data = 
     {
-        HeaderLabelX = "Popularity";
-        HeaderLabelY = "Tag";
-        Dataset = [|("First",100);("Second",150);("Third",110);("Fourth",90);|]
+        XAxisSeriesLabels = [|"Sales";"Expenses";"Profit"|];
+        YAxisLabel = "Year";
+        Dataset = [|
+                    ("2014",[|1000;400;200|]);
+                    ("2015",[|1170;460;250|]);
+                    ("2016",[|660;1120;300|]);
+                    ("2017",[|1030;540;350|]);
+                  |]
     }
 
 let your_chart_options = 
     {
-        Title = "Tag Popularity";
+        Title = "Business Performance";
         SubTitle = "Example Google chart injection";
         Width = 500;
         Height = 500;
-        SeriesName = "Popularity";
-        SeriesUnitOfMeasureLabel = "vote count"
+        SeriesUnitOfMeasureLabel = "£ `000"
     }
 
 let your_html_template = File.ReadAllText("index.html")
