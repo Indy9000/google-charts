@@ -12,6 +12,7 @@ Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let your_data = 
     {
         XAxisSeriesLabels = [|"Sales";"Expenses";"Profit"|];
+        SeriesUnitOfMeasureLabel = "£ `000";
         YAxisLabel = "Year";
         Dataset = [|
                     ("2014",[|1000;400;200|]);
@@ -27,17 +28,16 @@ let your_chart_options =
         SubTitle = "Example Google chart injection";
         Width = 500;
         Height = 500;
-        SeriesUnitOfMeasureLabel = "£ `000"
     }
 
 let your_html_template = File.ReadAllText("index.html")
 
-let new_html = InjectGoogleBarChart 
-                    your_html_template 
-                    "my-google-chart"  //id of the div to insert into
-                    your_chart_options 
-                    your_data
+let new_html = InjectGoogleBarChart your_html_template 
+                                    "my-google-chart"  //id of the div to insert into
+                                    your_chart_options 
+                                    your_data
 
+//open in default local browser
 let tmp = Path.ChangeExtension(Path.GetTempFileName(),".html")
 File.WriteAllText(tmp, new_html)
 System.Diagnostics.Process.Start(tmp)

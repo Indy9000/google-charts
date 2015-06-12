@@ -10,8 +10,6 @@
 
               function drawStuff() {
                 var data = new google.visualization.arrayToDataTable([
-                  //['Galaxy', 'Distance', 'Brightness'],
-                  //['Canis Major Dwarf', 8000, 23.3],
                   @@DATA-HEADER,
                   @@DATA-ITEMS
                 ]);
@@ -43,11 +41,11 @@
             SubTitle:string;
             Width:int;
             Height:int;
-            SeriesUnitOfMeasureLabel:string
         }
     type ChartData<'number> = 
         {
             XAxisSeriesLabels:string[];
+            SeriesUnitOfMeasureLabel:string;
             YAxisLabel:string;
             Dataset:(string * 'number[])[]
         }
@@ -70,7 +68,7 @@
                     .Replace("@@CHART-SUBTITLE", options.SubTitle)
                     .Replace("@@DATA-HEADER", data_header)
                     .Replace("@@DATA-ITEMS", String.Join(",", data_items))
-                    .Replace("@@CHART-SERIES-UOM", options.SeriesUnitOfMeasureLabel)
+                    .Replace("@@CHART-SERIES-UOM", data.SeriesUnitOfMeasureLabel)
                     .Replace("@@CHART-DIV",div_id)
 
         let k = html.IndexOf("</head>")
