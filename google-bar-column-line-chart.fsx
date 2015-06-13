@@ -2,10 +2,13 @@
     open System
 
     let gchart_lib = """<script type="text/javascript" src="https://www.google.com/jsapi"></script>"""
+    let gchart_orientation_h = """bars: 'horizontal',"""
+    let gchart_orientation_v = """bars: 'vertical',"""
+
     let js_bar_chart_injectable = 
         """
             <script type="text/javascript">
-              google.load("visualization", "1.1", {packages:["bar"]});
+              google.load("visualization", "1.1", {packages:["@@CHART-TYPE-1"]});
               google.setOnLoadCallback(drawStuff);
 
               function drawStuff() {
@@ -21,7 +24,7 @@
                       title: '@@CHART-TITLE',
                     subtitle: '@@CHART-SUBTITLE'
                   },
-                  bars: 'horizontal', // Required for Material Bar Charts.
+                  @@CHART-ORIENTATION
                   axes: {
                     x: {
                         0: {side:'top', label:'@@CHART-SERIES-UOM'}
@@ -29,30 +32,27 @@
                   }
                 };
 
-              var chart = new google.charts.Bar(document.getElementById('@@CHART-DIV'));
+              var chart = new google.charts.@@CHART-TYPE-2(document.getElementById('@@CHART-DIV'));
               chart.draw(data, options);
             };
             </script>
         """
 
-    type ChartOptions = 
+    type BCL_ChartOptions =  {Title:string ; SubTitle:string ; Width:int ; Height:int}
+    type BCL_ChartType = Bar | Column | Line
+    type BCL_ChartData<'number> = 
         {
-            Title:string;
-            SubTitle:string;
-            Width:int;
-            Height:int;
-        }
-    type ChartData<'number> = 
-        {
-            XAxisSeriesLabels:string[];
+            ChartType: BCL_ChartType;
+            hAxisSeriesLabels:string[];
             SeriesUnitOfMeasureLabel:string;
-            YAxisLabel:string;
+            vAxisLabel:string;
             Dataset:(string * 'number[])[]
         }
 
-    let InjectGoogleBarChart (html:string) (div_id:string) (options:ChartOptions) (data:ChartData<'a>) =
-        let series_labels = data.XAxisSeriesLabels |> Array.map(sprintf "'%s'")
-        let data_header = sprintf "['%s',%s]" data.YAxisLabel (String.Join(",", series_labels))
+    let InjectGoogleBarChart (options:BCL_ChartOptions) (data:BCL_ChartData<'a>) (div_id:string) (html:string) =
+
+        let series_labels = data.hAxisSeriesLabels |> Array.map(sprintf "'%s'")
+        let data_header = sprintf "['%s',%s]" data.vAxisLabel (String.Join(",", series_labels))
         let data_items = 
             data.Dataset 
             |> Array.map( fun (t,v) -> sprintf "['%s', %s]" t 
@@ -70,6 +70,23 @@
                     .Replace("@@DATA-ITEMS", String.Join(",", data_items))
                     .Replace("@@CHART-SERIES-UOM", data.SeriesUnitOfMeasureLabel)
                     .Replace("@@CHART-DIV",div_id)
+                    .Replace("@@CHART-TYPE-1", 
+                                match data.ChartType with 
+                                | Bar | Column -> "bar"
+                                | Line -> "line"
+                            )
+                    .Replace("@@CHART-TYPE-2", 
+                                match data.ChartType with 
+                                | Bar | Column -> "Bar"
+                                | Line -> "Line"
+                            )
+                    .Replace("@@CHART-ORIENTATION",
+                                match data.ChartType with
+                                |Bar -> gchart_orientation_h
+                                |Column -> gchart_orientation_v
+                                |Line -> ""
+                            )
+
 
         let k = html.IndexOf("</head>")
         let payload = match html.Contains(gchart_lib) with
