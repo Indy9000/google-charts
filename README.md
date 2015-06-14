@@ -7,7 +7,7 @@ Use this script to inject charts to your html on server side.
 
 You could also use it on the desktop using local browser without the need for a webserver to run.
 
-checkout ```bar-column-line-chart-how-to.fsx``` for guidance
+checkout ```how-to--bar-column-line-chart.fsx``` for guidance
 
 Here's a screenshot
 

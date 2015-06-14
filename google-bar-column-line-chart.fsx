@@ -32,8 +32,9 @@
                   }
                 };
 
-              var chart = new google.charts.@@CHART-TYPE-2(document.getElementById('@@CHART-DIV'));
-              chart.draw(data, options);
+                var chart_div = document.getElementById('@@CHART-DIV');
+                var chart = new google.charts.@@CHART-TYPE-2(chart_div);
+                chart.draw(data, options);
             };
             </script>
         """
